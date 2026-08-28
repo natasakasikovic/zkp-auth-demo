@@ -30,12 +30,6 @@ pub enum OrderStatus {
     Created,
 }
 
-#[derive(Debug, Clone, Serialize)]
-pub struct InventoryItemResponse {
-    pub product_id: String,
-    pub available_quantity: u32,
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ReserveStockRequest {
     pub order_id: Uuid,
