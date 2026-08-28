@@ -4,9 +4,10 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use common::models::CreateOrderResponse;
+use common::{models::CreateOrderResponse, zkp_auth::default_order_secret_key};
 use reqwest::Client;
 use uuid::Uuid;
+use zkp_auth_schnorr::SecretKey;
 
 use crate::domain::order::seed_catalog;
 
@@ -17,6 +18,7 @@ pub struct AppState {
     pub http_client: Client,
     pub warehouse_url: String,
     pub payment_url: String,
+    pub service_secret_key: SecretKey,
     pub catalog: HashMap<String, u64>,
     pub orders: Orders,
 }
@@ -32,6 +34,7 @@ impl AppState {
             http_client: Client::new(),
             warehouse_url,
             payment_url,
+            service_secret_key: default_order_secret_key(),
             catalog: seed_catalog(),
             orders: Arc::new(Mutex::new(HashMap::new())),
         }

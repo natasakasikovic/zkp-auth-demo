@@ -2,8 +2,40 @@ pub mod payment_client;
 pub mod warehouse_client;
 
 use common::models::ErrorResponse;
+use common::zkp_auth::{ORDER_SERVICE_ID, encode_auth_proof};
+use rand_core::OsRng;
+use serde::Serialize;
+use zkp_auth_schnorr::{AuthContext, create_auth_proof, current_unix_timestamp};
 
-use crate::error::ServiceError;
+use crate::{error::ServiceError, state::AppState};
+
+pub fn build_zkp_auth_header<T: Serialize>(
+    state: &AppState,
+    audience: &str,
+    method: &str,
+    path: &str,
+    request_body: &T,
+) -> Result<(String, Vec<u8>), ServiceError> {
+    let body = serde_json::to_vec(request_body)
+        .map_err(|error| ServiceError::internal(format!("failed to serialize request: {error}")))?;
+    let mut rng = OsRng;
+
+    let context = AuthContext::new(
+        ORDER_SERVICE_ID,
+        audience,
+        method,
+        path,
+        &body,
+        &mut rng,
+        current_unix_timestamp(),
+    );
+
+    let proof = create_auth_proof(&mut rng, &state.service_secret_key, context);
+    let header_value = encode_auth_proof(&proof)
+        .map_err(|error| ServiceError::internal(format!("failed to encode ZKP proof: {error}")))?;
+
+    Ok((header_value, body))
+}
 
 pub async fn parse_internal_response<T>(
     response: reqwest::Response,
