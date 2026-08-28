@@ -41,7 +41,6 @@ pub enum InventoryReservationError {
 }
 
 pub fn seed_inventory() -> HashMap<String, InventoryItem> {
-    // 
     HashMap::from([
         ("laptop".to_string(), InventoryItem::new("laptop", 5)),
         ("keyboard".to_string(), InventoryItem::new("keyboard", 20)),
