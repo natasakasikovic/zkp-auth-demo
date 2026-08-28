@@ -8,7 +8,7 @@ The project models a small e-commerce flow with three services:
 - `warehouse-service` manages inventory and reserves products.
 - `payment-service` simulates payment approval.
 
-Final version should integrate `zkp-auth-lib` so that internal service-to-service calls are authenticated with Zero-Knowledge Proofs instead of static API keys or shared secrets.
+Internal service-to-service calls are authenticated with the local `zkp-auth-lib` Schnorr proof implementation. The client still talks only to `order-service`, while `warehouse-service` and `payment-service` reject internal requests that do not contain a valid ZKP authentication proof.
 
 ## Run Locally
 
