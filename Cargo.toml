@@ -15,7 +15,11 @@ version = "0.1.0"
 anyhow = "1"
 axum = "0.7"
 common = { path = "crates/common" }
+rand_core = { version = "0.6", features = ["getrandom"] }
 reqwest = { version = "0.12", features = ["json"] }
 serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "net"] }
 uuid = { version = "1", features = ["v4", "serde"] }
+zkp-auth-schnorr = { package = "auth", path = "../zkp-auth-lib/auth" }
